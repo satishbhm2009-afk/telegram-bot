@@ -3,12 +3,14 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 
 TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = os.getenv("ADMIN_ID")
+if update.effective_user.id != ADMIN_ID:
+
 
 if not TOKEN or not ADMIN_ID:
     raise RuntimeError("BOT_TOKEN or ADMIN_ID missing")
 
-ADMIN_ID = int(ADMIN_ID)
+if update.effective_user.id != ADMIN_ID:
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
