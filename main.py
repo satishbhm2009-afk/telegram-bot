@@ -1,8 +1,14 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 
-ADMIN_ID = int(os.environ.get("1812820539"))
+TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_ID = os.getenv("ADMIN_ID")
+
+if not TOKEN or not ADMIN_ID:
+    raise RuntimeError("BOT_TOKEN or ADMIN_ID missing")
+
+ADMIN_ID = int(ADMIN_ID)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
@@ -14,38 +20,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != 1812820539:
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
         await update.message.reply_text("⛔ Admin only.")
         return
-    await update.message.reply_text("✅ Admin panel ready")
-
-async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != 1812820539:
-        await update.message.reply_text("⛔ Permission denied.")
-        return
-    await update.message.reply_text("📊 Bot running 24×7 on Railway 🚆")
+    await update.message.reply_text("📊 Bot is running on Railway 🚆")
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     if q.data == "stats":
-        if q.from_user.id != 1812820539:
+        if q.from_user.id != ADMIN_ID:
             await q.edit_message_text("⛔ Admin only.")
         else:
             await q.edit_message_text("📊 Stats OK")
     elif q.data == "about":
         await q.edit_message_text("🤖 Telegram Bot\nPowered by Railway")
 
-async def auto_reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🙏 /start likh kar menu open karein")
-
-app = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
+app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("admin", admin))
 app.add_handler(CommandHandler("stats", stats))
 app.add_handler(CallbackQueryHandler(button))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, auto_reply))
 
 app.run_polling()
