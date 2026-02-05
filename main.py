@@ -2,7 +2,7 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, ContextTypes, filters
 
-ADMIN_ID = int(os.environ.get("ADMIN_ID"))
+ADMIN_ID = int(os.environ.get("1812820539"))
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
@@ -15,13 +15,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    if update.effective_user.id != 1812820539:
         await update.message.reply_text("⛔ Admin only.")
         return
     await update.message.reply_text("✅ Admin panel ready")
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    if update.effective_user.id != 1812820539:
         await update.message.reply_text("⛔ Permission denied.")
         return
     await update.message.reply_text("📊 Bot running 24×7 on Railway 🚆")
@@ -30,7 +30,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     if q.data == "stats":
-        if q.from_user.id != ADMIN_ID:
+        if q.from_user.id != 1812820539:
             await q.edit_message_text("⛔ Admin only.")
         else:
             await q.edit_message_text("📊 Stats OK")
